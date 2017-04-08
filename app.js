@@ -28,6 +28,8 @@ var salesperson 	= require('./routes/salesperson');
 var subscription 	= require('./routes/subscription');
 var subscrparam 	= require('./routes/subscrparam');
 var substatus 	= require('./routes/substatus');
+///------------------------------------------------
+var orders 	= require('./routes/orders');
 
 
 
@@ -71,6 +73,8 @@ app.use('/salesperson', salesperson);
 app.use('/subscription', subscription);
 app.use('/subscrparam', subscrparam);
 app.use('/substatus', substatus);
+app.use('/orders', orders);
+
 
 
 //-----------------------------------
