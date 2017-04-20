@@ -29,13 +29,17 @@ var subscription 	= require('./routes/subscription');
 var subscrparam 	= require('./routes/subscrparam');
 var substatus 	= require('./routes/substatus');
 ///------------------------------------------------
-var orders 	= require('./routes/orders');
+var orders 	= require('./routes/selects/orders');
 
 
 
 //-----------------------------------------
-
-
+//security
+//-----------------------------------------
+process.env.SECRET_KEY="wewe23lk32lk432k432;k432e32e32";
+var autch = require('./routes/security/autch');
+var signup = require('./routes/security/signup');
+//-----------------------------------------------------
 
 var app = express();
 
@@ -75,7 +79,11 @@ app.use('/subscrparam', subscrparam);
 app.use('/substatus', substatus);
 app.use('/orders', orders);
 
-
+//-----------------------------------------
+//security
+//-----------------------------------------
+app.use('/autch', autch);
+app.use('/signup', signup);
 
 //-----------------------------------
 // catch 404 and forward to error handler

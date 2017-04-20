@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 module.exports = router;
-var pool = require('../pg');
+var pool = require('../../pg');
 
 router.get('/:id?',function(req,res,next)
 {

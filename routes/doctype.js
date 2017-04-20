@@ -3,34 +3,19 @@ var router = express.Router();
 
 module.exports = router;
 var pool = require('../pg');
-
-router.get('/:id?',function(req,res,next)
+var qw = require('../helpfunc');
+router.get('/',function(req,res,next)
 {
-
-    if(req.params.id)
+    if (router.status==1||router.status==2)
     {
-        pool.connect(function(err, client)
-        {
-            if(err) {
-                return console.error('error fetching client from pool', err);
-            }
-            client.query('SELECT *  FROM doctype where id= '+req.params.id+'', function(err, result)
-            {
-                if(!err)
-                    res.json(result.rows);
-                else
-                    res.json(err);
-            });
-        });
-    }
-    else{
-
         pool.connect(function(err, client, done)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('SELECT *  FROM doctype ', function(err, result)
+            var resl=qw.select(req,'DELETE *  FROM doctype ');
+
+            client.query(resl, function(err, result)
             {
                 if(!err)
                     res.json(result.rows);
@@ -40,61 +25,71 @@ router.get('/:id?',function(req,res,next)
 
             });
         });
-    }
+    }else
+      res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
 {
-    pool.connect(function(err, client, done)
-    {
-        if(err) {
-            return console.error('error fetching client from pool', err);
-        }
+  if (router.status==1)
+  {
 
-        client.query('INSERT INTO doctype (id, name) VALUES ($1,$2);',[req.body.id,req.body.name], function(err, result)
+        pool.connect(function(err, client, done)
         {
-            if(!err)
-                res.json(req.body);
-            else
-                res.json(err);
+            if(err) {
+                return console.error('error fetching client from pool', err);
+            }
 
+            client.query('INSERT INTO doctype (id, name) VALUES ($1,$2);',[req.body.id,req.body.name], function(err, result)
+            {
+                if(!err)
+                    res.json(req.body);
+                else
+                    res.json(err);
+
+            });
         });
-    });
-
+  }else
+    res.json({access:"denied"});
 
 });
 
 
-router.delete('/:id?',function(req,res,next)
+router.delete('/',function(req,res,next)
 {
-    if(req.params.id)
-    {
+  
+  if (router.status==1)
+  {    
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('DELETE  FROM doctype where id= '+req.params.id+'', function(err, count)
+            var resl=qw.select(req,'DELETE  FROM doctype ');
+
+            client.query(resl, function(err, count)
             {
                 if(!err)
                     res.json(count);
                 else
                     res.json(err);
             });
-        });
-    }
-
+        });   
+    }else
+      res.json({access:"denied"});
 });
-router.put('/:id',function(req,res,next)
+router.put('/',function(req,res,next)
 {
-
+    if (router.status==1)
+    {    
 
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('UPDATE doctype SET  id = $1, name= $2  WHERE doctype.id= $3',[req.body.id,req.body.name,req.params.id], function(err, result)
+            var resl=qw.upd(req.body,'UPDATE doctype SET ');
+            client.query(resl, function(err, result)
             {
                 if(!err)
                     res.json(["status: ","OK!"]);
@@ -102,8 +97,8 @@ router.put('/:id',function(req,res,next)
                     res.json(err);
             });
         });
-
-
+  }else
+      res.json({access:"denied"});
 
 });
 

@@ -1,20 +1,21 @@
 var express = require('express');
 var router = express.Router();
-
-module.exports = router;
 var pool = require('../pg');
+var qw = require('../helpfunc');
 
-router.get('/:id?',function(req,res,next)
+
+router.get('/',function(req,res,next)
 {
 
-    if(req.params.id)
-    {
-        pool.connect(function(err, client)
+   if (router.status==1||router.status==2)
+    {  
+          pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('SELECT * FROM plancategory WHERE plancategory.plancategoryid='+req.params.id+'', function(err, result)
+            var resl=qw.select(req,'SELECT *  FROM  plancategory');
+            client.query(resl, function(err, result)
             {
                 if(!err)
                     res.json(result.rows);
@@ -22,31 +23,16 @@ router.get('/:id?',function(req,res,next)
                     res.json(err);
             });
         });
-    }
-    else{
-
-        pool.connect(function(err, client, done)
-        {
-            if(err) {
-                return console.error('error fetching client from pool', err);
-            }
-            client.query('SELECT *  FROM plancategory', function(err, result)
-            {
-                if(!err)
-                    res.json(result.rows);
-                else
-                    res.json(err);
-                done(err);
-
-            });
-        });
-    }
+    }else
+        res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
 {
-    pool.connect(function(err, client, done)
+    if (router.status==1)
     {
+       pool.connect(function(err, client, done)
+      {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
@@ -62,20 +48,22 @@ router.post('/',function(req,res,next)
         });
     });
 
-
+}else
+    res.json({access:"denied"});
 });
 
 
-router.delete('/:id?',function(req,res,next)
+router.delete('/',function(req,res,next)
 {
-    if(req.params.id)
+   if (router.status==1)
     {
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('DELETE  from plancategory WHERE plancategory.plancategoryid= '+req.params.id+'', function(err, count)
+            var resl=qw.select(req,'DELETE  FROM  plancategory');
+            client.query(resl, function(err, count)
             {
                 if(!err)
                     res.json(count);
@@ -83,20 +71,23 @@ router.delete('/:id?',function(req,res,next)
                     res.json(err);
             });
         });
-    }
+}else
+   res.json({access:"denied"});
 
 });
-router.put('/:id',function(req,res,next)
+router.put('/',function(req,res,next)
 {
 
-
+    if (router.status==1)
+    {
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
             var r=req.body;
-            client.query("UPDATE plancategory SET  name=$1, description=$2, accountid=$3 WHERE plancategory.plancategoryid= $4;",[r.name, r.description, r.accountid,req.params.id], function(err, result)
+            var resl=qw.upd(req.body,'UPDATE plancategory SET ');
+            client.query(resl, function(err, result)
             {
                 if(!err)
                     res.json(["status: ","OK!"]);
@@ -105,7 +96,8 @@ router.put('/:id',function(req,res,next)
             });
         });
 
-
+    }else
+        res.json({access:"denied"});
 
 });
 
