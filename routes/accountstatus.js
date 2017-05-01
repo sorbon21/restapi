@@ -4,14 +4,13 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-    if (router.status==1||router.status==2)
-    {
- 
         pool.connect(function(err, client, done)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
+            if (router.status==1||router.status==2)
+            {
                 var resl=qw.select(req,'SELECT *  FROM accountstatus');            
                 client.query(resl, function(err, result)
                 {
@@ -22,28 +21,22 @@ router.get('/',function(req,res,next)
                     done(err);
 
                 });
-   
+            }
         });
-    }else
-       res.json({access:"denied"});
-
 
 });
 
 router.post('/',function(req,res,next)
 {
- 
- if (router.status==1)
- {
     pool.connect(function(err, client, done)
     {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
 
+if (router.status==1){
 
-
-        client.query('INSERT INTO accountstatus  (id, name) VALUES ($1,$2);',[req.body.id,req.body.name], function(err, result)
+        client.query('INSERT INTO accountstatus  (name) VALUES ($1);',[req.body.name], function(err, result)
         {
             if(!err)
                 res.json(req.body);
@@ -51,11 +44,10 @@ router.post('/',function(req,res,next)
                 res.json(err);
 
         });    
+}else
+res.send("Не хвотает привилегии!");
 
     });
-  }else
- res.json({access:"denied"});
-
 
 
 });
@@ -64,13 +56,14 @@ router.post('/',function(req,res,next)
 router.delete('/',function(req,res,next)
 {
     
-  if (router.status==1) 
-  {
-     pool.connect(function(err, client)
+        pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
+
+            if (router.status==1) 
+            {
              var resl=qw.select(req,'DELETE FROM accountstatus');            
             client.query(resl, function(err, count)
             {
@@ -79,26 +72,25 @@ router.delete('/',function(req,res,next)
                 else
                     res.json(err);
             });
-          
+
+            }else
+res.send("Не хвотает привилегии!");
+            
         });
     
-   }else
- 	res.json({access:"denied"});
-  
 
 });
 router.put('/',function(req,res,next)
 {
 
- if (router.status==1) 
- {
-    
 
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
+            if (router.status==1) 
+            {
             
             var resl=qw.upd(req.body,'UPDATE accountstatus  SET ');            
             client.query(resl, function(err, result)
@@ -108,12 +100,12 @@ router.put('/',function(req,res,next)
                 else
                     res.json(err);
             });
+            }else
+res.send("Не хвотает привилегии!");
             
 
         });
 
-   }else
-	 res.json({access:"denied"});
 
 
 });

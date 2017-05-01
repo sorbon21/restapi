@@ -13,9 +13,6 @@ router.get('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-           if (router.status==1||router.status==2)
-            {
-
             var resl=qw.select(req,'SELECT *  FROM account ');
             client.query(resl, function(err, result)
             {
@@ -26,9 +23,6 @@ router.get('/',function(req,res,next)
                 done(err);
 
             });
-        }
-        else
-            res.json({access:"denied"});
         });
 
 });
@@ -41,9 +35,8 @@ router.post('/',function(req,res,next)
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-    if (router.status==1)
-    {
-        client.query("INSERT INTO account (accountid, vendoraccountid, typeid, statusid, creationdate, companyname, address1, address2, city, state, zip, countryid)VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",[r.accountid, r.vendoraccountid, r.typeid, r.statusid, r.creationdate, r.companyname, r.address1, r.address2, r.city, r.state, r.zip, r.countryid], function(err, result)
+
+        client.query("INSERT INTO account (vendoraccountid, typeid, statusid, creationdate, companyname, address1, address2, city, state, zip, country_code)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",[r.vendoraccountid, r.typeid, r.statusid, r.creationdate, r.companyname, r.address1, r.address2, r.city, r.state, r.zip, r.country_code], function(err, result)
         {
             if(!err)
                 res.json(req.body);
@@ -51,9 +44,6 @@ router.post('/',function(req,res,next)
                 res.json(err);
 
         });
-        }
-        else
-            res.json({access:"denied"});
     });
 
 
@@ -68,9 +58,7 @@ router.delete('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-        if (router.status==1)
-        {
-    
+            
             var resl=qw.select(req,'DELETE FROM account ');
             client.query(resl, function(err, count)
             {
@@ -79,9 +67,6 @@ router.delete('/',function(req,res,next)
                 else
                     res.json(err);
             });
-            }
-        else
-            res.json({access:"denied"});
         });
     
 
@@ -95,8 +80,6 @@ router.put('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-      if (router.status==1)
-      {
             var r=req.body;             
             var resl=qw.upd(req.body,'UPDATE account SET ');
             client.query(resl, function(err, result)
@@ -106,9 +89,6 @@ router.put('/',function(req,res,next)
                 else
                     res.json(err);
             });
-        }
-        else
-            res.json({access:"denied"});
         });
 
 

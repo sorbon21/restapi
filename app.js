@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 
 var account = require('./routes/account');
 var accountstatus = require('./routes/accountstatus');
+var accounttype = require('./routes/accounttype');
 var ardoc = require('./routes/ardoc');
 var docdet = require('./routes/docdet');
 var docstatus 	= require('./routes/docstatus');
@@ -58,6 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/account', account);
 app.use('/accountstatus', accountstatus);
+app.use('/accounttype', accounttype);
 app.use('/ardoc', ardoc);
 app.use('/docdet', docdet);
 app.use('/docstatus', docstatus);

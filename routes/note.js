@@ -8,8 +8,7 @@ var qw = require('../helpfunc');
 router.get('/',function(req,res,next)
 {
 
-    if (router.status==1||router.status==2)
-    {
+
         pool.connect(function(err, client, done)
         {
             if(err) {
@@ -26,41 +25,36 @@ router.get('/',function(req,res,next)
 
             });
         });
-    }else
-      res.json({access:"denied"});
+
 });
 
 router.post('/',function(req,res,next)
 {
-
-  if (router.status==1)
+    pool.connect(function(err, client, done)
     {
-        pool.connect(function(err, client, done)
+        if(err) {
+            return console.error('error fetching client from pool', err);
+        }
+        var r=req.body;
+
+
+        client.query("INSERT INTO note (shortdescr, creationdate, accountid, description) VALUES ($1,$2,$3,$4);",[r.shortdescr, r.creationdate, r.accountid, r.description], function(err, result)
         {
-            if(err) {
-                return console.error('error fetching client from pool', err);
-            }
-            var r=req.body;
+            if(!err)
+                res.json(req.body);
+            else
+                res.json(err);
 
-            client.query("INSERT INTO note (shortdescr, creationdate, accountid, description) VALUES ($1,$2,$3,$4);",[r.shortdescr, r.creationdate, r.accountid, r.description], function(err, result)
-            {
-                if(!err)
-                    res.json(req.body);
-                else
-                    res.json(err);
-
-            });
         });
+    });
 
-    }else
-      res.json({access:"denied"});
+
 });
 
 
 router.delete('/',function(req,res,next)
 {
-    if (router.status==1)
-    {
+    
         pool.connect(function(err, client)
         {
             if(err) {
@@ -77,15 +71,13 @@ router.delete('/',function(req,res,next)
                     res.json(err);
             });
         });
-    }else
-      res.json({access:"denied"});
+
 
 });
 router.put('/',function(req,res,next)
 {
 
-    if (router.status==1)
-    {
+
         pool.connect(function(err, client)
         {
             if(err) {
@@ -103,8 +95,7 @@ router.put('/',function(req,res,next)
         });
 
 
-    }else
-      res.json({access:"denied"});
+
 });
 
 module.exports = router;

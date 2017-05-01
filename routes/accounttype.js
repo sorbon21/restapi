@@ -1,28 +1,30 @@
-var express = require('express');
-var router = express.Router();
+var router = require('./security/security');
 var pool = require('../pg');
 var qw = require('../helpfunc');
 
-
 router.get('/',function(req,res,next)
 {
-
-    
-        pool.connect(function(err, client)
+        pool.connect(function(err, client, done)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'SELECT *  FROM  plancategory');
-            client.query(resl, function(err, result)
+            
+            if (router.status==1||router.status==2)
             {
-                if(!err)
-                    res.json(result.rows);
-                else
-                    res.json(err);
-            });
+                var resl=qw.select(req,'SELECT *  FROM accountype');            
+                client.query(resl, function(err, result)
+                {
+                    if(!err)
+                        res.json(result.rows);
+                    else
+                        res.json(err);
+                    done(err);
+
+                });
+            }
         });
-    
+
 });
 
 router.post('/',function(req,res,next)
@@ -32,16 +34,20 @@ router.post('/',function(req,res,next)
         if(err) {
             return console.error('error fetching client from pool', err);
         }
-        var r=req.body;
 
-        client.query("INSERT INTO plancategory (name, description, accountid) VALUES ($1,$2,$3)",[r.name, r.description, r.accountid], function(err, result)
+if (router.status==1){
+
+        client.query('INSERT INTO accountype(name) VALUES ($1);',[req.body.name], function(err, result)
         {
             if(!err)
                 res.json(req.body);
             else
                 res.json(err);
 
-        });
+        });    
+}else
+res.send("Не хвотает привилегии!");
+
     });
 
 
@@ -50,13 +56,16 @@ router.post('/',function(req,res,next)
 
 router.delete('/',function(req,res,next)
 {
-
+    
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'DELETE  FROM  plancategory');
+
+            if (router.status==1) 
+            {
+             var resl=qw.select(req,'DELETE FROM accountype');            
             client.query(resl, function(err, count)
             {
                 if(!err)
@@ -64,8 +73,12 @@ router.delete('/',function(req,res,next)
                 else
                     res.json(err);
             });
-        });
 
+            }else
+res.send("Не хвотает привилегии!");
+            
+        });
+    
 
 });
 router.put('/',function(req,res,next)
@@ -77,8 +90,10 @@ router.put('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var r=req.body;
-            var resl=qw.upd(req.body,'UPDATE plancategory SET ');
+            if (router.status==1) 
+            {
+            
+            var resl=qw.upd(req.body,'UPDATE accountype  SET ');            
             client.query(resl, function(err, result)
             {
                 if(!err)
@@ -86,6 +101,10 @@ router.put('/',function(req,res,next)
                 else
                     res.json(err);
             });
+            }else
+res.send("Не хвотает привилегии!");
+            
+
         });
 
 

@@ -6,8 +6,7 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-if (router.status==1||router.status==2)
- {
+
         pool.connect(function(err, client)
         {
             if(err) {
@@ -23,21 +22,19 @@ if (router.status==1||router.status==2)
                     res.json(err);
             });
         });
-}else
-      res.json({access:"denied"});
+
 });
 
 router.post('/',function(req,res,next)
 {
-if (router.status==1)
- {    
     pool.connect(function(err, client, done)
     {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-        client.query("INSERT INTO salesorder (customeraccountid, ordernbr, orderstatusid, ordertypeid, docdate, total_value, descr, salesid) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);",[r.customeraccountid, r.ordernbr, r.orderstatusid, r.ordertypeid, r.docdate, r.total_value, r.descr, r.salesid], function(err, result)
+
+        client.query("INSERT INTO salesorder (customeraccountid, orderstatusid, ordertypeid, docdate, total_value, descr, salesid) VALUES ($1,$2,$3,$4,$5,$6,$7);",[r.customeraccountid, r.orderstatusid, r.ordertypeid, r.docdate, r.total_value, r.descr, r.salesid], function(err, result)
         {
 
            if(!err)
@@ -47,17 +44,14 @@ if (router.status==1)
 
         });
     });
-}else
-      res.json({access:"denied"});
+
 
 });
 
 
 router.delete('/',function(req,res,next)
 {
-if (router.status==1)
- {
-         pool.connect(function(err, client)
+        pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
@@ -71,15 +65,13 @@ if (router.status==1)
                     res.json(err);
             });
         });
-}else
-   res.json({access:"denied"});
+    
 
 });
 router.put('/',function(req,res,next)
 {
 
-if (router.status==1)
- {
+
         pool.connect(function(err, client)
         {
             if(err) {
@@ -97,8 +89,7 @@ if (router.status==1)
         });
 
 
-}else
-      res.json({access:"denied"});
+
 });
 
 module.exports = router;
