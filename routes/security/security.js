@@ -1,23 +1,23 @@
-var jwt=require('jsonwebtoken');// библиотека jsonwebtoken для авторизации по токену
-var express = require('express');// фреймворк express
-var security=express.Router();// создаем объект routes каторый используется для маршрутизации 
+var jwt=require('jsonwebtoken');
+var express = require('express');
+var security=express.Router();
 
 security.use(function(req, res, next)
 {
 
-var token = req.body.token || req.query.token || req.headers['x-access-token']||req.params.token;// получаем токен по все возможным параметрам
+var token = req.body.token || req.query.token || req.headers['x-access-token']||req.params.token;
 
-if(token)// если токен передан
+if(token)
 {
-	jwt.verify(token,process.env.SECRET_KEY,function(err,decode)//проверяем его
+	jwt.verify(token,process.env.SECRET_KEY,function(err,decode)
 	{
-		if(err){res.status(500).send("Не правильный token!");// если имеется ощибки то передаем сообщения об ощибке
+		if(err){res.status(500).send("Не правильный token!");
 	}
-	else{// иначе
+	else{
 			next();
-			  // декодируем  сообщения
+			var decoded = jwt.decode(token);
 			var decoded = jwt.decode(token, {complete: true});
-			module.exports.status=decoded.payload.status;// експортируем статус пользователя для распределения ролей
+			module.exports.status=decoded.payload.status;
 		}
 	});
 }else
