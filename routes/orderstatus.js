@@ -1,5 +1,4 @@
-var express = require('express');
-var router = express.Router();
+var router = require('./security/security');
 var qw = require('../helpfunc');
 var pool = require('../pg');
 
