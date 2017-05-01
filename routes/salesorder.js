@@ -6,7 +6,8 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-
+if (router.status==1||router.status==2)
+ {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -22,18 +23,20 @@ router.get('/',function(req,res,next)
                     res.json(err);
             });
         });
-
+}else
+      res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
 {
+if (router.status==1)
+ {    
     pool.connect(function(err, client, done)
     {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-
         client.query("INSERT INTO salesorder (customeraccountid, orderstatusid, ordertypeid, docdate, total_value, descr, salesid) VALUES ($1,$2,$3,$4,$5,$6,$7);",[r.customeraccountid, r.orderstatusid, r.ordertypeid, r.docdate, r.total_value, r.descr, r.salesid], function(err, result)
         {
 
@@ -44,14 +47,17 @@ router.post('/',function(req,res,next)
 
         });
     });
-
+}else
+      res.json({access:"denied"});
 
 });
 
 
 router.delete('/',function(req,res,next)
 {
-        pool.connect(function(err, client)
+if (router.status==1)
+ {
+         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
@@ -65,13 +71,15 @@ router.delete('/',function(req,res,next)
                     res.json(err);
             });
         });
-    
+}else
+   res.json({access:"denied"});
 
 });
 router.put('/',function(req,res,next)
 {
 
-
+if (router.status==1)
+ {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -89,7 +97,8 @@ router.put('/',function(req,res,next)
         });
 
 
-
+}else
+      res.json({access:"denied"});
 });
 
 module.exports = router;

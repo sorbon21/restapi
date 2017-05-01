@@ -4,14 +4,14 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
+    if (router.status==1||router.status==2)
+    {
+ 
         pool.connect(function(err, client, done)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            
-            if (router.status==1||router.status==2)
-            {
                 var resl=qw.select(req,'SELECT *  FROM accountype');            
                 client.query(resl, function(err, result)
                 {
@@ -22,22 +22,28 @@ router.get('/',function(req,res,next)
                     done(err);
 
                 });
-            }
+   
         });
+    }else
+       res.json({access:"denied"});
+
 
 });
 
 router.post('/',function(req,res,next)
 {
+ 
+ if (router.status==1)
+ {
     pool.connect(function(err, client, done)
     {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
 
-if (router.status==1){
 
-        client.query('INSERT INTO accountype(name) VALUES ($1);',[req.body.name], function(err, result)
+
+        client.query('INSERT INTO accountype  (name) VALUES ($1);',[req.body.name], function(err, result)
         {
             if(!err)
                 res.json(req.body);
@@ -45,10 +51,11 @@ if (router.status==1){
                 res.json(err);
 
         });    
-}else
-res.send("Не хвотает привилегии!");
 
     });
+  }else
+ res.json({access:"denied"});
+
 
 
 });
@@ -57,14 +64,13 @@ res.send("Не хвотает привилегии!");
 router.delete('/',function(req,res,next)
 {
     
-        pool.connect(function(err, client)
+  if (router.status==1) 
+  {
+     pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-
-            if (router.status==1) 
-            {
              var resl=qw.select(req,'DELETE FROM accountype');            
             client.query(resl, function(err, count)
             {
@@ -73,25 +79,26 @@ router.delete('/',function(req,res,next)
                 else
                     res.json(err);
             });
-
-            }else
-res.send("Не хвотает привилегии!");
-            
+          
         });
     
+   }else
+ 	res.json({access:"denied"});
+  
 
 });
 router.put('/',function(req,res,next)
 {
 
+ if (router.status==1) 
+ {
+    
 
         pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            if (router.status==1) 
-            {
             
             var resl=qw.upd(req.body,'UPDATE accountype  SET ');            
             client.query(resl, function(err, result)
@@ -101,12 +108,12 @@ router.put('/',function(req,res,next)
                 else
                     res.json(err);
             });
-            }else
-res.send("Не хвотает привилегии!");
             
 
         });
 
+   }else
+	 res.json({access:"denied"});
 
 
 });

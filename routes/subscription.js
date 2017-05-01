@@ -6,7 +6,8 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-
+    if (router.status==1||router.status==2)
+    {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -21,11 +22,14 @@ router.get('/',function(req,res,next)
                     res.json(err);
             });
         });
-
+    }else
+      res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
 {
+ if (router.status==1)
+ {
     pool.connect(function(err, client, done)
     {
         if(err) {
@@ -41,14 +45,16 @@ router.post('/',function(req,res,next)
 
         });
     });
-
+}else
+      res.json({access:"denied"});
 
 });
 
 
 router.delete('/',function(req,res,next)
 {
-    
+  if (router.status==1)
+  {   
         pool.connect(function(err, client)
         {
             if(err) {
@@ -62,13 +68,15 @@ router.delete('/',function(req,res,next)
                     res.json(err);
             });
         });
-    
+    }else
+      res.json({access:"denied"});
 
 });
 router.put('/',function(req,res,next)
 {
 
-
+if (router.status==1) 
+{
         pool.connect(function(err, client)
         {
             if(err) {
@@ -84,7 +92,8 @@ router.put('/',function(req,res,next)
                     res.json(err);
             });
         });
-
+}else
+      res.json({access:"denied"});
 
 
 });

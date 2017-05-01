@@ -7,6 +7,8 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
+    if (router.status==1||router.status==2)
+    {
         pool.connect(function(err, client, done)
         {
             if(err) {
@@ -23,11 +25,15 @@ router.get('/',function(req,res,next)
 
             });
         });
-    
+    }else
+      res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
 {
+
+ if (router.status==1)
+ {
     pool.connect(function(err, client, done)
     {
         if(err) {
@@ -35,7 +41,7 @@ router.post('/',function(req,res,next)
         }
         var r=req.body;
 
-        client.query("INSERT INTO orddet (orderid, unitprice_value, servqty, duration, discountamt_value, extendedprice_value, subscriptionid, planperiodid, resourceid, descr) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10);",[r.orderid, r.unitprice_value, r.servqty, r.duration, r.discountamt_value, r.extendedprice_value, r.subscriptionid, r.planperiodid, r.resourceid, r.descr], function(err, result)
+                client.query("INSERT INTO orddet (orderid, unitprice_value, servqty, duration, discountamt_value, extendedprice_value, subscriptionid, planperiodid, resourceid, descr) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10);",[r.orderid, r.unitprice_value, r.servqty, r.duration, r.discountamt_value, r.extendedprice_value, r.subscriptionid, r.planperiodid, r.resourceid, r.descr], function(err, result)
         {
             if(!err)
                 res.json(req.body);
@@ -45,13 +51,15 @@ router.post('/',function(req,res,next)
         });
     });
 
-
+}else
+      res.json({access:"denied"});
 });
 
 
 router.delete('/',function(req,res,next)
 {
-    
+  if (router.status==1)
+   {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -68,12 +76,14 @@ router.delete('/',function(req,res,next)
             });
         });
     
-
+}else
+      res.json({access:"denied"});
 });
 router.put('/',function(req,res,next)
 {
 
-
+    if (router.status==1)
+    {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -91,7 +101,8 @@ router.put('/',function(req,res,next)
                     res.json(err);
             });
         });
-
+    }else
+      res.json({access:"denied"});
 
 
 });

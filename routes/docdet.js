@@ -7,12 +7,14 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-        pool.connect(function(err, client, done)
-        {
-            if(err) {
-                return console.error('error fetching client from pool', err);
-            }
-            var resl=qw.select(req,'SELECT *  FROM docdet');
+    if (router.status==1||router.status==2)
+    {
+            pool.connect(function(err, client, done)
+            {
+                if(err) {
+                    return console.error('error fetching client from pool', err);
+                }
+                var resl=qw.select(req,'SELECT *  FROM docdet');
             client.query(resl, function(err, result)
             {
                 if(!err)
@@ -22,29 +24,36 @@ router.get('/',function(req,res,next)
                 done(err);
 
             });
+
         });
+    }else
+      res.json({access:"denied"});
  
 });
 
 router.post('/',function(req,res,next)
 {
-    pool.connect(function(err, client, done)
+    if (router.status==1)
     {
-        if(err) {
-            return console.error('error fetching client from pool', err);
-        }
-        var r=req.body;
-
-        client.query("INSERT INTO docdet(ardocid, unitprice_value, extendedprice_value, servqty, duration, planperiodid, resourceid, discountamt_value, orddetid, ddorderid, subscriptionid, descr) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);",
-        	[r.ardocid, r.unitprice_value, r.extendedprice_value, r.servqty, r.duration, r.planperiodid, r.resourceid, r.discountamt_value, r.orddetid, r.ddorderid, r.subscriptionid, r.descr], function(err, result)
+  
+        pool.connect(function(err, client, done)
         {
-            if(!err)
-                res.json(req.body);
-            else
-                res.json(err);
+            if(err) {
+                return console.error('error fetching client from pool', err);
+            }
+            var r=req.body;
+                    client.query("INSERT INTO docdet(ardocid, unitprice_value, extendedprice_value, servqty, duration, planperiodid, resourceid, discountamt_value, orddetid, ddorderid, subscriptionid, descr) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);",[r.ardocid, r.unitprice_value, r.extendedprice_value, r.servqty, r.duration, r.planperiodid, r.resourceid, r.discountamt_value, r.orddetid, r.ddorderid, r.subscriptionid, r.descr], function(err, result)
 
+            {
+                if(!err)
+                    res.json(req.body);
+                else
+                    res.json(err);
+
+            });
         });
-    });
+    }else
+        res.json({access:"denied"});
 
 
 });
@@ -52,7 +61,7 @@ router.post('/',function(req,res,next)
 
 router.delete('/',function(req,res,next)
 {
-    if(req.params.id)
+    if (router.status==1)
     {
         pool.connect(function(err, client)
         {
@@ -70,12 +79,14 @@ router.delete('/',function(req,res,next)
                     res.json(err);
             });
         });
-    }
+    }else
+  res.json({access:"denied"});
 
 });
-router.put('/:id',function(req,res,next)
+router.put('/',function(req,res,next)
 {
-
+    if (router.status==1)
+    {
 
         pool.connect(function(err, client)
         {
@@ -93,7 +104,8 @@ router.put('/:id',function(req,res,next)
                     res.json(err);
             });
         });
-
+    }else
+  res.json({access:"denied"});
 
 
 });

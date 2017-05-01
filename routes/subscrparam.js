@@ -6,7 +6,8 @@ var qw = require('../helpfunc');
 
 router.get('/',function(req,res,next)
 {
-
+  if (router.status==1||router.status==2)
+    {
         pool.connect(function(err, client)
         {
             if(err) {
@@ -22,10 +23,14 @@ router.get('/',function(req,res,next)
                     res.json(err);
             });
         });
-
+}else
+      res.json({access:"denied"});
 });
 
 router.post('/',function(req,res,next)
+{
+  
+if (router.status==1)
 {
     pool.connect(function(err, client, done)
     {
@@ -33,7 +38,6 @@ router.post('/',function(req,res,next)
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-       
         client.query("insert into subscrparam(subscriptionid,resourceid,includedvalue,amount,maxvalue,setupfee,recurringfee,costforadditional) values($1,$2,$3,$4,$5,$6,$7,$8)",[r.subscriptionid, r.resourceid, r.includedvalue, r.amount, r.maxvalue, r.setupfee, r.recurringfee, r.costforadditional], function(err, result)
         {
 
@@ -44,7 +48,8 @@ router.post('/',function(req,res,next)
 
         });
     });
-
+}else
+      res.json({access:"denied"});
 
 });
 
@@ -52,7 +57,9 @@ router.post('/',function(req,res,next)
 router.delete('/',function(req,res,next)
 {
     
-        pool.connect(function(err, client)
+ if (router.status==1)
+{
+       pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
@@ -67,11 +74,14 @@ router.delete('/',function(req,res,next)
                     res.json(err);
             });
         });
-    
+    }else
+      res.json({access:"denied"});
 });
 router.put('/',function(req,res,next)
 {
 
+if (router.status==1)
+{
 
         pool.connect(function(err, client)
         {
@@ -90,7 +100,8 @@ router.put('/',function(req,res,next)
             });
         });
 
-
+}else
+      res.json({access:"denied"});
 
 });
 
