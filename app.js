@@ -38,8 +38,9 @@ var orders 	= require('./routes/selects/orders');
 //security
 //-----------------------------------------
 process.env.SECRET_KEY="wewe23lk32lk432k432;k432e32e32";
-var autch = require('./routes/security/autch');
+var autch = require('./routes/security/auth');
 var signup = require('./routes/security/signup');
+var logout = require('./routes/security/logout');
 //-----------------------------------------------------
 
 var app = express();
@@ -84,9 +85,9 @@ app.use('/orders', orders);
 //-----------------------------------------
 //security
 //-----------------------------------------
-app.use('/autch', autch);
+app.use('/auth', autch);
 app.use('/signup', signup);
-
+app.use('/logout', logout);
 //-----------------------------------
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

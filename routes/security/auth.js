@@ -7,7 +7,7 @@ var ecnrypt=require('sha256');
 router.get('/',function(req,res)
 {
 	
-	res.send("Отправьте свoи идентификационные данные<br>для получения токена! например<br>login:alex<br>password:merser");
+	res.send(res.json({example:{user:'alex',password:'123456'}}));
 
 });
 router.post('/',function(req,res)
@@ -43,7 +43,7 @@ router.post('/',function(req,res)
         });
 
         }else{
-        	res.send("Не  правильные параметры были переданы!");
+        	res.send({success:false,params:'bad'});
         }
     });
 });
