@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 //-----------------------------------------
+var app = express();
 
 var account = require('./routes/account');
 var accountstatus = require('./routes/accountstatus');
@@ -42,7 +43,6 @@ var autch = require('./routes/security/autch');
 var signup = require('./routes/security/signup');
 //-----------------------------------------------------
 
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,9 +57,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 //-----------------------------------
 app.use('/', index);
-app.use('/account', account);
 app.use('/accountstatus', accountstatus);
-app.use('/accounttype', accounttype);
+
+
 app.use('/ardoc', ardoc);
 app.use('/docdet', docdet);
 app.use('/docstatus', docstatus);
@@ -72,6 +72,7 @@ app.use('/periodtype', periodtype);
 app.use('/plan', plan);
 app.use('/plancategory', plancategory);
 app.use('/planperiod', planperiod);
+app.use('/account', account);
 app.use('/planrate', planrate);
 app.use('/resource', resource);
 app.use('/salesorder', salesorder);
@@ -80,7 +81,7 @@ app.use('/subscription', subscription);
 app.use('/subscrparam', subscrparam);
 app.use('/substatus', substatus);
 app.use('/orders', orders);
-
+app.use('/accounttype', accounttype);
 //-----------------------------------------
 //security
 //-----------------------------------------
