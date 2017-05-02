@@ -1,11 +1,14 @@
-var router = require('./security/security');
-
+var security = require('./security/security');
 var pool = require('../pg');
 var qw = require('../helpfunc');
+var express = require('express');
+var router = express.Router();
+router.use(security);
+
 
 router.get('/',function(req,res,next)
 {
-    if (router.status==1||router.status==2)
+    if (security.status==1||security.status==2)
     {
         pool.connect(function(err, client, done)
         {
@@ -30,7 +33,7 @@ router.get('/',function(req,res,next)
 router.post('/',function(req,res,next)
 {
 
- if (router.status==1)
+ if (security.status==1)
  {
     pool.connect(function(err, client, done)
     {
@@ -56,7 +59,7 @@ router.post('/',function(req,res,next)
 
 router.delete('/',function(req,res,next)
 {
-  if (router.status==1)
+  if (security.status==1)
    {
         pool.connect(function(err, client)
         {
@@ -80,7 +83,7 @@ router.delete('/',function(req,res,next)
 router.put('/',function(req,res,next)
 {
 
-    if (router.status==1)
+    if (security.status==1)
     {
         pool.connect(function(err, client)
         {

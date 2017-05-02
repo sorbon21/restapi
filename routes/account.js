@@ -1,6 +1,9 @@
-var router = require('./security/security');
+var security = require('./security/security');
 var pool = require('../pg');
 var qw = require('../helpfunc');
+var express = require('express');
+var router = express.Router();
+router.use(security);
 
 router.get('/',function(req,res,next)
 {
@@ -10,7 +13,7 @@ router.get('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-           if (router.status==1||router.status==2)
+           if (security.status==1||security.status==2)
             {
 
             var resl=qw.select(req,'SELECT *  FROM account ');
@@ -38,7 +41,7 @@ router.post('/',function(req,res,next)
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-    if (router.status==1)
+    if (security.status==1)
     {
       client.query("INSERT INTO account (vendoraccountid, typeid, statusid, creationdate, companyname, address1, address2, city, state, zip, country_code)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",[r.vendoraccountid, r.typeid, r.statusid, r.creationdate, r.companyname, r.address1, r.address2, r.city, r.state, r.zip, r.country_code], function(err, result)
         {
@@ -65,7 +68,7 @@ router.delete('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-        if (router.status==1)
+        if (security.status==1)
         {
     
             var resl=qw.select(req,'DELETE FROM account ');
@@ -92,7 +95,7 @@ router.put('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-      if (router.status==1)
+      if (security.status==1)
       {
             var r=req.body;             
             var resl=qw.upd(req.body,'UPDATE account SET ');
