@@ -14,7 +14,7 @@ router.get('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'DELETE *  FROM doctype ');
+            var resl=qw.select(req,'SELECT *  FROM doctype ');
 
             client.query(resl, function(err, result)
             {
