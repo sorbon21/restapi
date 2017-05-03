@@ -23,8 +23,8 @@ router.get('/:id',function(req,res,next)
             			{
                 			if(!err)
                 			{
-                				result.rows.push(result1.rows);
-                				res.json(result.rows);		
+                				result1.rows.push(result.rows);
+                				res.json(result1.rows);		
                 			}                				
                 			else
                     			res.json(err);
