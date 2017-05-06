@@ -83,35 +83,43 @@ router.get('/:id?',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('SELECT * FROM salesorder', function(err, result1)
+            	
+            client.query('SELECT * FROM salesorder', function(err1, result1)
             {
-                if(!err)
+                if(!err1)
                {
-               	for (var i = 0; i < result1.rows.legth; i++) 
-               	{
 
-               			client.query('SELECT * FROM orddet where orderid  = $1',[result1.rows[i].id], function(err, result)
-            			{
-                			if(!err)
-                			{
-                				
-            			var obj1 = result1.rows[i];
-					var obj2 ={details:result.rows};
-					Object.assign(obj1, obj2);
-                				
-                				res.json(obj1);		
-                			}                				
-                			else
-                    			res.json(err);
-            			});
-              		
-               	}
+
+
+for (let i in result1.rows) 
+{
+    client.query('SELECT * FROM orddet where orderid  = $1',[result1.rows[i].id], function(err2, result)
+                        {
+                            if(!err2)
+                            {
+                                
+                    var obj1 = result1.rows[i]; 
+                    console.log(result1.rows[i]);
+                    
+                        
+                    var obj2 ={details:result.rows};
+                        Object.assign(obj1, obj2);                              
+                            res.json(obj1);     
+
+                            }                               
+                            else
+                                res.json(err2);
+                        });
+}
+
+
+               	
 
 
 			    	
                 }
                 else
-                    res.json(err);
+                    res.json(err1);
             });
         });
 
