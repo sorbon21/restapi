@@ -85,7 +85,8 @@ if (security.status==1)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.upd(req.body,'UPDATE ordertype SET ');
+            
+            var resl=qw.upd(req,'UPDATE ordertype SET  ','id');
             client.query(resl, function(err, result)
             {
                 if(!err)

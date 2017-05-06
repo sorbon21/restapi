@@ -97,8 +97,8 @@ router.put('/',function(req,res,next)
             }
       if (security.status==1)
       {
-            var r=req.body;             
-            var resl=qw.upd(req.body,'UPDATE account SET ');
+                 
+            var resl=qw.upd(req,'UPDATE account SET  ','id');
             client.query(resl, function(err, result)
             {
                 if(!err)

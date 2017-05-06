@@ -5,6 +5,41 @@ var express = require('express');
 var router = express.Router();
 router.use(security);
 
+router.get('/:id/status',function(req,res,next)
+{
+    if (security.status==1)
+    {
+     
+
+        if (req.params.id)
+        {
+                qw.status_modifay('SELECT name FROM subscription join substatus on subscription.statusid = substatus.id WHERE subscription.id ',req,res,pool,0);
+            
+        }
+    }
+
+        
+    
+});
+
+
+router.put('/:id/:status',function(req,res,next)
+{
+	if (security.status==1)
+    {
+     
+    
+        if (req.params.id&&req.params.status)
+        {
+                qw.status_modifay('UPDATE subscription SET  statusid ='+req.params.status+' WHERE id ',req,res,pool,1);
+            
+        }
+    }
+        
+    
+});
+
+
 
 router.get('/',function(req,res,next)
 {
@@ -84,8 +119,8 @@ if (security.status==1)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var r=req.body;
-            var resl=qw.upd(r,'UPDATE subscription SET  ');
+                       
+            var resl=qw.upd(req,'UPDATE subscription SET  ','id');
             client.query(resl, function(err, result)
             {
                 if(!err)

@@ -92,7 +92,8 @@ router.put('/',function(req,res,next)
             }
             var r=req.body;
 
-            var resl=qw.upd(req.body,'DELETE  FROM orddet ');
+            
+            var resl=qw.upd(req,'UPDATE orddet SET  ','id');
             client.query(resl, function(err, result){
             	
             

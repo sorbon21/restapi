@@ -88,7 +88,8 @@ router.put('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.upd(req.body,'UPDATE orderstatus SET  ');
+            
+            var resl=qw.upd(req,'UPDATE orderstatus SET  ','id');
 
             client.query(resl, function(err, result)
             {

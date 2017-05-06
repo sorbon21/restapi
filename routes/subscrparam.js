@@ -91,8 +91,9 @@ if (security.status==1)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var r=req.body;
-            var resl=qw.upd(r,'update  subscrparam set ');
+
+            
+            var resl=qw.upd(req,'UPDATE subscrparam SET  ','id');
 
             client.query(resl, function(err, result)
             {

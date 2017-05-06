@@ -35,6 +35,7 @@ router.post('/',function(req,res,next)
 
 if (security.status==1)
 { 
+ 
  pool.connect(function(err, client, done)
     {
         if(err) {
@@ -88,7 +89,7 @@ if (security.status==1)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.upd(req.body,'UPDATE substatus SET  ');
+            var resl=qw.upd(req,'UPDATE substatus SET  ','id');
             client.query(resl, function(err, result)
             {
                 if(!err)

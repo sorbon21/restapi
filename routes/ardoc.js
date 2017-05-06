@@ -98,8 +98,7 @@ if (security.status==1)
                 return console.error('error fetching client from pool', err);
             }
     
-            var r=req.body;
-            var resl=qw.upd(req.body,'UPDATE ardoc SET '); 
+            var resl=qw.upd(req,'UPDATE ardoc SET  ','id');
             client.query(resl, function(err, result)
             {
                 if(!err)
