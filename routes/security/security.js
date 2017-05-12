@@ -10,12 +10,14 @@ if(token)
 {
 	jwt.verify(token,process.env.SECRET_KEY,function(err,decode)
 	{
-		if(err){res.status(500).send({success:false,token:'incorrect'});
+		if(err){
+			res.status(500).send({success:false,token:'incorrect'});
 	}
 	else{
 			next();
 			var decoded = jwt.decode(token, {complete: true});
 			module.exports.status=decoded.payload.status;
+			module.exports.uid=decoded.payload.uid;
 		}
 	});
 }else

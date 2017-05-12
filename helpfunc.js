@@ -116,3 +116,4 @@ status_modifay: function(sql,req,res,pool,type)
 };
 
 module.exports=result;
+

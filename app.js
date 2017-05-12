@@ -41,6 +41,7 @@ process.env.SECRET_KEY="wewe23lk32lk432k432;k432e32e32";
 var autch = require('./routes/security/auth');
 var signup = require('./routes/security/signup');
 var logout = require('./routes/security/logout');
+var blacklist_clear = require('./routes/security/blacklist_clear');
 //-----------------------------------------------------
 
 var app = express();
@@ -88,6 +89,8 @@ app.use('/orders', orders);
 app.use('/auth', autch);
 app.use('/signup', signup);
 app.use('/logout', logout);
+app.use('/blacklist_clear', blacklist_clear);
+
 //-----------------------------------
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

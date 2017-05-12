@@ -14,7 +14,7 @@ router.post('/',function(req,res)
 {
 
  pool.connect(function(err, client, done)
-    {
+ {
         if(err) {
             return console.error('error fetching client from pool', err);
         }
@@ -23,15 +23,15 @@ router.post('/',function(req,res)
         if (r.login&&r.password)
         {
 	    var pass=ecnrypt.x2(req.body.password);
-        client.query("select * from autch where login= $1;",[r.login], function(err, result)
+        client.query("select * from auth where login= $1;",[r.login], function(err, result)
         {
 
            if(!err&&result.rows.length==1)
            {
            	if (result.rows[0].login==r.login&&result.rows[0].password==pass)
            	{
-	           	var user={status:result.rows[0].id_status};
-				var token=jwt.sign(user,process.env.SECRET_KEY,{expiresIn:5000});
+	           	var user={status:result.rows[0].role_id,uid:result.rows[0].id};
+				var token=jwt.sign(user,process.env.SECRET_KEY,{expiresIn: 22});
 				res.json({success:true,token:token});
     
            	}else
