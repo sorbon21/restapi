@@ -1,6 +1,9 @@
+var security = require('../security/security');
 var express = require('express');
 var router = express.Router();
 var pool = require('../../pg');
+router.use(security);
+
 
 
 router.get('/:id?',function(req,res,next)
@@ -183,17 +186,7 @@ if (security.status==1)
 
                 });
 
-
-
-
-
-
-
-                }
-
-
-
-   
+    }  
         });
  	}
 		
@@ -205,16 +198,3 @@ if (security.status==1)
 
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
