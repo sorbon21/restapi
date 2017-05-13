@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 router.use(security);
 
-router.get('/',function(req,res,next)
+router.get('/:id?',function(req,res,next)
 {
    if (security.status==1||security.status==2)
    {
@@ -57,7 +57,7 @@ if (security.status==1)
 });
 
 
-router.delete('/',function(req,res,next)
+router.delete('/:id?',function(req,res,next)
 {
     if (security.status==1)
     { 
@@ -79,7 +79,7 @@ router.delete('/',function(req,res,next)
 }else
       res.json({access:"denied"});
 });
-router.put('/',function(req,res,next)
+router.put('/:id?',function(req,res,next)
 {
 
 if (security.status==1)

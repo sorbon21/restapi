@@ -31,7 +31,7 @@ router.post('/',function(req,res)
            	if (result.rows[0].login==r.login&&result.rows[0].password==pass)
            	{
 	           	var user={status:result.rows[0].role_id,uid:result.rows[0].id};
-				var token=jwt.sign(user,process.env.SECRET_KEY,{expiresIn: 22});
+				var token=jwt.sign(user,process.env.SECRET_KEY,{expiresIn: 5000});
 				res.json({success:true,token:token});
     
            	}else

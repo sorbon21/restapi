@@ -6,7 +6,7 @@ var router = express.Router();
 router.use(security);
 
 
-router.get('/',function(req,res,next)
+router.get('/:id?',function(req,res,next)
 {
 
    if (security.status==1||security.status==2)
@@ -16,7 +16,7 @@ router.get('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'SELECT *  FROM  plancategory');
+            var resl=qw.select(req,'SELECT *  FROM  plancategory ');
             client.query(resl, function(err, result)
             {
                 if(!err)
@@ -55,7 +55,7 @@ router.post('/',function(req,res,next)
 });
 
 
-router.delete('/',function(req,res,next)
+router.delete('/:id?',function(req,res,next)
 {
    if (security.status==1)
     {
@@ -64,7 +64,7 @@ router.delete('/',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'DELETE  FROM  plancategory');
+            var resl=qw.select(req,'DELETE  FROM  plancategory ');
             client.query(resl, function(err, count)
             {
                 if(!err)
@@ -77,7 +77,7 @@ router.delete('/',function(req,res,next)
    res.json({access:"denied"});
 
 });
-router.put('/',function(req,res,next)
+router.put('/:id?',function(req,res,next)
 {
 
     if (security.status==1)

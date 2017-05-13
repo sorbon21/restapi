@@ -5,6 +5,7 @@ var result=
 
 select: function(req,qr) 
 {
+
      	var query_length = Object.keys(req.query).length;     	
      			if(query_length > 0)
             	{
@@ -25,12 +26,15 @@ select: function(req,qr)
 	                            qr += ' and '
 	                        }
 	                    }	
-	                
-	                    
-	                }
-            }
-     	
-	console.log(qr);            
+	             	}
+
+	            }else
+	               	if (req.params.id) 
+	               	{
+	               		qr+= 'where id = '+req.params.id+' ';	
+	               	}				
+	           	
+     			
             	return qr;
 },
 findone: function(req) 
@@ -44,6 +48,7 @@ findone: function(req)
 return i;
 	
 },
+
 upd: function(req,qr,queryid) 
 {	    
 	 
@@ -60,55 +65,18 @@ upd: function(req,qr,queryid)
 	       	} 
 
 		}
-		qr=qr.substring(0,qr.length-1);
+		qr=qr.substring(0,qr.length-2);
+
    		qr+= " where "+queryid+" = "+req.params.id;   
 
+	}else
+	{
+		qr="";
 	}
-
-  console.log(qr);
-            return qr;
+      return qr;
 },
 
-status_modifay: function(sql,req,res,pool,type)
-{
 
-   if (req.params.id)
-  {
-	var qwer="";
-	if (type==0)
-	{
-         qwer=sql+" = "+req.params.id+";";
-         console.log(qwer);
-    }else
-    {
-
-         qwer=sql+" = "+req.params.id+";";
-         console.log(qwer);
-	}
-    
-            pool.connect(function(err, client)
-            {
-                if(err) {
-                    return console.error('error fetching client from pool', err);
-                }
-
-                client.query(qwer, function(err, result)
-                {
-                    if(!err)
-                    {
-                    	if (type!=0)
-                    	{
-                    		res.json({update:true});	
-                    	}else
-                    		res.json(result.rows);
-                   	
-                    }
-                    else
-                        res.json(err);
-                });
-            });    
-}
-}
 
 
 

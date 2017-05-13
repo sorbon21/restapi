@@ -5,43 +5,8 @@ var express = require('express');
 var router = express.Router();
 router.use(security);
 
-router.get('/:id/status',function(req,res,next)
-{
-    if (security.status==1)
-    {
-     
 
-        if (req.params.id)
-        {
-                qw.status_modifay('SELECT name FROM subscription join substatus on subscription.statusid = substatus.id WHERE subscription.id ',req,res,pool,0);
-            
-        }
-    }
-
-        
-    
-});
-
-
-router.put('/:id/:status',function(req,res,next)
-{
-	if (security.status==1)
-    {
-     
-    
-        if (req.params.id&&req.params.status)
-        {
-                qw.status_modifay('UPDATE subscription SET  statusid ='+req.params.status+' WHERE id ',req,res,pool,1);
-            
-        }
-    }
-        
-    
-});
-
-
-
-router.get('/',function(req,res,next)
+router.get('/:id?',function(req,res,next)
 {
     if (security.status==1||security.status==2)
     {
@@ -88,16 +53,18 @@ router.post('/',function(req,res,next)
 });
 
 
-router.delete('/',function(req,res,next)
+router.delete('/:id?',function(req,res,next)
 {
-  if (security.status==1)
-  {   
-        pool.connect(function(err, client)
+ if (security.status==1)
+{
+       pool.connect(function(err, client)
         {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('DELETE  from subscription WHERE subscription.subscriptionid= '+req.params.id+'', function(err, count)
+            var resl=qw.select(req,'DELETE  FROM subscription ');
+
+            client.query(resl, function(err, count)
             {
                 if(!err)
                     res.json(count);
@@ -107,9 +74,8 @@ router.delete('/',function(req,res,next)
         });
     }else
       res.json({access:"denied"});
-
 });
-router.put('/',function(req,res,next)
+router.put('/:id?',function(req,res,next)
 {
 
 if (security.status==1) 

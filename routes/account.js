@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 router.use(security);
 
-router.get('/',function(req,res,next)
+router.get('/:id?',function(req,res,next)
 {
 
         pool.connect(function(err, client, done)
@@ -60,7 +60,7 @@ router.post('/',function(req,res,next)
 });
 
 
-router.delete('/',function(req,res,next)
+router.delete('/:id?',function(req,res,next)
 {
     
         pool.connect(function(err, client)
@@ -86,7 +86,7 @@ router.delete('/',function(req,res,next)
     
 
 });
-router.put('/',function(req,res,next)
+router.put('/:id?',function(req,res,next)
 {
 
 
@@ -102,7 +102,22 @@ router.put('/',function(req,res,next)
             client.query(resl, function(err, result)
             {
                 if(!err)
-                    res.json(r);
+                    if (req.body.statusid)
+                    {
+                    var sub_status;
+                    if (req.body.statusid==2)
+                        sub_status = 3;
+                    else if (req.body.statusid==1)
+                        sub_status = 1;
+                    client.query('UPDATE subscription set statusid = $1 where accountid = $2', [sub_status,req.params.id], function(result1,err)
+                    {
+                        if (!err)
+                            res.json(["status: ","OK!"]);
+                        else 
+                            res.json(err);
+                    });
+                    } else
+                    res.json(["status: ","OK!"]);
                 else
                     res.json(err);
             });
