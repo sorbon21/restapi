@@ -15,13 +15,13 @@ router.get('/',function(req,res,next)
 		            return console.error('error fetching client from pool', err);
 		        }
 		               var token=req.headers['token'];
-		               var qw="INSERT INTO  blacklist(user_id,token) VALUES("+security.uid+",'"+token+"');";
+		               var qw="INSERT INTO  blacklist(user_id,token) VALUES("+security.uid+",'"+token+"');"; // добавляем в таблицу токен пользователя
 		               
 		        client.query(qw, function(err, result)
 		        {
 		           if(!err)
 		                res.json({user:"logauted"});
-		            else
+		            else                                        // выводим сообщения
 		            	res.json({error:"params"});
 		     
 		        });

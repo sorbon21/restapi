@@ -31,6 +31,7 @@ var subscrparam 	= require('./routes/subscrparam');
 var substatus 	= require('./routes/substatus');
 ///------------------------------------------------
 var orders 	= require('./routes/selects/orders');
+var documents 	= require('./routes/selects/documents');
 
 
 
@@ -82,6 +83,7 @@ app.use('/subscription', subscription);
 app.use('/subscrparam', subscrparam);
 app.use('/substatus', substatus);
 app.use('/orders', orders);
+app.use('/documents', documents);
 
 //-----------------------------------------
 //security

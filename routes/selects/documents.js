@@ -8,16 +8,20 @@ var qw = require('../../helpfunc')
 
 router.get('/:id?',function(req,res,next)
 {
-	
+    
 if (security.status==1)
  {    
-
-    	qw.fullinfo('salesorder','orddet','orderid',req,res,pool);
- }
+    qw.fullinfo('ardoc','docdet','ardocid',req,res,pool);
+    }
         
 });
 
 
+
+
+
+
+//------------------------------
 
 router.post('/',function(req,res,next)
 {
@@ -29,7 +33,7 @@ if (security.status==1)
             return console.error('error fetching client from pool', err);
         }
         var r=req.body;
-        client.query("INSERT INTO salesorder (customeraccountid, orderstatusid, ordertypeid, total_value, descr, salesid) VALUES ($1,1,$2,$3,$4,$5);",[r.customeraccountid, r.ordertypeid, r.total_value, r.descr, r.salesid], function(err, result)
+        client.query("INSERT INTO ardoc (statusid, total_value, customeraccountid, docdate, description, salesid, creditdocid, doctypeid) VALUES($1,$2,$3,$4,$5,$6,$7,$8);",[r.statusid, r.total_value, r.customeraccountid, r.docdate, r.description, r.salesid, r.creditdocid, r.doctypeid], function(err, result)
         {
 
            if(!err)
@@ -59,12 +63,12 @@ if (security.status==1&&req.params.id)
                 return console.error('error fetching client from pool', err);
             }
 
-			client.query('SELECT orderstatusid FROM salesorder where id= $1',[req.params.id], function(err, result)
+			client.query('SELECT statusid FROM ardoc where id= $1',[req.params.id], function(err, result)
             {
-                if(!err&&result.rows[0].orderstatusid==1)
+                if(!err&&result.rows[0].statusid==1)
                     {
                   		
-				            client.query('DELETE FROM salesorder where id= $1',[req.params.id], function(err, result1)
+				            client.query('DELETE FROM ardoc where id= $1',[req.params.id], function(err, result1)
 				            {
 				                if(!err)
 				                    res.json({status: "OK!"});
@@ -77,7 +81,6 @@ if (security.status==1&&req.params.id)
                     res.json(err);
             });            
         });
-
 
 }else
       res.json({access:"denied"});
@@ -96,13 +99,13 @@ if (security.status==1&&req.params.id)
                 return console.error('error fetching client from pool', err);
             }
 
-			client.query('SELECT orderstatusid FROM salesorder where id= $1',[req.params.id], function(err, result)
+			client.query('SELECT statusid FROM ardoc where id= $1',[req.params.id], function(err, result)
             {
-                if(!err&&req.body.orderstatusid>result.rows[0].orderstatusid)
+                if(!err&&req.body.statusid>result.rows[0].statusid)
                     {
                   	
 
-				            client.query('UPDATE salesorder set  orderstatusid =$1 where id= $2',[req.body.orderstatusid,req.params.id], function(err, result1)
+				            client.query('UPDATE ardoc set  statusid =$1 where id= $2',[req.body.statusid,req.params.id], function(err, result1)
 				            {
 				                if(!err)
 				                    res.json({status: "OK!"});
@@ -138,7 +141,7 @@ router.get('/:id/detail',function(req,res,next)
                 return console.error('error fetching client from pool', err);
             }
             
-            client.query('SELECT *  FROM orddet where orderid =$1',[req.params.id], function(err, result)
+            client.query('SELECT *  FROM docdate where ardocid =$1',[req.params.id], function(err, result)
             {
                 if(!err)
                     res.json(result.rows);
@@ -152,7 +155,7 @@ router.get('/:id/detail',function(req,res,next)
       res.json({access:"denied"});
 });
 
-/*
+
 
 
 router.put('/:id/detail',function(req,res,next)
@@ -166,16 +169,16 @@ if (security.status==1&&req.params.id)
                 return console.error('error fetching client from pool', err);
             }
 
-			client.query('SELECT orderstatusid FROM salesorder where id= $1',[req.params.id], function(err, result)
+			client.query('SELECT statusid FROM ardoc where id= $1',[req.params.id], function(err, result)
             {
-                if(!err&&result.rows[0].orderstatusid==1)
+                if(!err&&req.body.statusid==1)
                     {
-                  	var resl=qw.upd(req,'UPDATE orddet SET  ','orderid');
+                  	var resl=qw.upd(req,'UPDATE docdet SET  ','ardocid');
 
 				            client.query(resl, function(err, result1)
 				            {
 				                if(!err)
-				                    res.json(["status: ","OK!"]);
+				                    res.json({status: "OK!"});
 				                else
 				                    res.json(err);
 				            });
@@ -191,7 +194,7 @@ if (security.status==1&&req.params.id)
       res.json({access:"denied"});
 });
 
-*/
+
 router.post('/:id/detail',function(req,res,next)
 {
 
@@ -203,14 +206,13 @@ if (security.status==1&&req.params.id)
                 return console.error('error fetching client from pool', err);
             }
 
-			client.query('SELECT orderstatusid FROM salesorder where id= $1',[req.params.id], function(err, result)
+			client.query('SELECT statusid FROM ardoc where id= $1',[req.params.id], function(err, result)
             {
-                if(!err&&result.rows[0].orderstatusid==1)
+                if(!err&&result.rows[0].statusid==1)
                     {
                   		
 			       			var r=req.body;
-                			client.query("INSERT INTO orddet (orderid, unitprice_value, servqty, duration, discountamt_value, extendedprice_value, subscriptionid, planperiodid, resourceid, descr) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10);",[req.params.id, r.unitprice_value, r.servqty, r.duration, r.discountamt_value, r.extendedprice_value, r.subscriptionid, r.planperiodid, r.resourceid, r.descr], function(err, result1)
-
+        					client.query("INSERT INTO docdet(ardocid, unitprice_value, extendedprice_value, servqty, duration, planperiodid, resourceid, discountamt_value, orddetid, ddorderid, subscriptionid, descr) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);",[req.params.id, r.unitprice_value, r.extendedprice_value, r.servqty, r.duration, r.planperiodid, r.resourceid, r.discountamt_value, r.orddetid, r.ddorderid, r.subscriptionid, r.descr], function(err, result)
 				            {
 				                if(!err)
 				                    res.json({status: "OK!"});
@@ -240,12 +242,12 @@ if (security.status==1&&req.params.id)
                 return console.error('error fetching client from pool', err);
             }
 
-			client.query('SELECT orderstatusid FROM salesorder where id= $1',[req.params.id], function(err, result)
+			client.query('SELECT statusid FROM ardoc where id= $1',[req.params.id], function(err, result)
             {
-                if(!err&&result.rows[0].orderstatusid==1)
+                if(!err&&result.rows[0].statusid==1)
                     {
                   		
-				            client.query('DELETE FROM orddet where orderid= $1',[req.params.id], function(err, result1)
+				            client.query('DELETE FROM docdet WHERE ardocid = $1',[req.params.id], function(err, result1)
 				            {
 				                if(!err)
 				                    res.json({status: "OK!"});
@@ -266,17 +268,8 @@ if (security.status==1&&req.params.id)
 
 
 
+//------------------------------
+
+
+
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-

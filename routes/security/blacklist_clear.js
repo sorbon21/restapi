@@ -10,16 +10,16 @@ router.get('/',function(req,res,next)
 {
    if (security.status==1||security.status==2)
    {
-		var countdel=0;
+		
 			pool.connect(function(err, client, done)
 		    {
 		        if(err) {
 		            return console.error('error fetching client from pool', err);
 		        }
-		               var token=req.headers['token'];
+		               var token=req.headers['token']; 
 		               
 		               
-		        client.query("select * from blacklist;", function(err, result)
+		        client.query("select * from blacklist;", function(err, result) // все данные из blcaklist 
 		        {
 		           if(!err)
 		           {
@@ -27,17 +27,17 @@ router.get('/',function(req,res,next)
 					           	{
 					           		
 
-					           				jwt1.verify(result.rows[i].token,process.env.SECRET_KEY,function(err,decode)
+					           				jwt1.verify(result.rows[i].token,process.env.SECRET_KEY,function(err,decode) // проверяем на правильность токена
 											{
 												if(err)
 												{
 															
-													client.query("delete from blacklist where token =$1",[result.rows[i].token], function(err, result1)
+													client.query("delete from blacklist where token =$1",[result.rows[i].token], function(err, result1) //если токен не доступные удаляем его
 											        {
 											           if(!err)
 											           {
 											        		console.log("deleted ");   	 
-											        		countdel++;
+											        		
 											        		
 											           }
 											             else
@@ -52,9 +52,10 @@ router.get('/',function(req,res,next)
 											 		
 											);
 
-					           		if (i==result.rows.length-1) {
-									        			res.json({countdeleted:countdel}) ;	
-									        		}
+					           		if (i==result.rows.length-1) 
+					           		{
+									        			res.json({success:true}) ;	
+									}
 					           	}
 		           }else
 		            	res.json({error:"params"});
