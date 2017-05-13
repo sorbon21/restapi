@@ -130,7 +130,7 @@ if (security.status==1)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-                if (req.body.resourceid!=null)
+                if (req.body.resourceid==null)
                 {
 
 
@@ -139,8 +139,7 @@ if (security.status==1)
                     if(!err)
                     {
 
-                    	      			var r=req.body;
-								        client.query("insert into orddet (orderid,unitprice_value,servqty,duration,discountamt_value,extendedprice_value,planperiodid,subscriptionid) values () ",[req.body.orderid,pp.setupfee + pp.subscriptionfee, from_request.quantity,from_request.duration,0,(pp.setupfee + pp.subscriptionfee)*from_request.quantity*from_request.duration,'Subscription on], function(err, result)
+							        client.query("insert into orddet (orderid,unitprice_value,servqty,duration,discountamt_value,extendedprice_value,planperiodid,subscriptionid) values ($1,$2,$3,$4,$5,$6,$7,$8) ",[req.body.orderid,result.rows[0].setupfee + result.rows[0].subscriptionfee, req.body.quantity,req.body.duration,0,(result.rows[0].setupfee + result.rows[0].subscriptionfee)*req.body.quantity*req.body.duration,'Subscription on'+result.rows[0].name], function(err, result1)
 								        {
 
 								           if(!err)
@@ -149,7 +148,6 @@ if (security.status==1)
 								                res.json(err);
 
 								        });
-
                     }
 
                     else
@@ -160,6 +158,36 @@ if (security.status==1)
 
 
                 }else{
+
+				client.query('select pp.*, p.name from planperiod pp join plan p on (p.id = pp.planid) where id =$1',[req.body.planperiodid], function(err, result)
+                {
+                    if(!err)
+                    {
+
+							        client.query("insert into orddet (orderid,unitprice_value,servqty,duration,discountamt_value,extendedprice_value,planperiodid,resourceid,desc,subscriptionid) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ",[req.body.orderid,result.rows[0].setupfee + result.rows[0].subscriptionfee, req.body.quantity,req.body.duration,0,(result.rows[0].setupfee + result.rows[0].subscriptionfee)*req.body.quantity*req.body.duration,'Subscription on'+result.rows[0].name], function(err, result1)
+
+								        {
+								        	 values (params.id,pr.setupfee + pr.recurringfee, from_request.quantity,from_request.duration,0,(pr.setupfee + pr.recurringfee)*from_request.quantity*from_request.duration,from_request.resourceid,'Additional resource' || r.name,from_request.subsctiptionid)
+
+								           if(!err)
+								                res.json(req.body);
+								            else
+								                res.json(err);
+
+								        });
+                    }
+
+                    else
+                        res.json(err);
+                    done(err);
+
+                });
+
+
+
+
+
+
 
                 }
 
