@@ -100,6 +100,54 @@ router.put('/:id?',function(req,res,next)
       res.json({access:"denied"});
 
 });
+//--------------------------------------------------------
+// report
+//--------------------------------------------------------
+router.get('/:id/report',function(req,res,next)
+{
+   if (security.status==1)
+    {
+    	if (req.params.id)
+    	{
+
+    		pool.connect(function(err, client)
+            {
+	            if(err) {
+	                return console.error('error fetching client from pool', err);
+	            }
+	            client.query('Select sp.id, sp.name, so.id, so.docdate, so.total_value *sp.salescommission as commission from salesperson sp join salesorder so on(so.salesid = sp.id) where sp.id = $1',[req.params.id], function(err, result)
+	            {
+	                if(!err)
+	                    res.json(result.rows);
+	                else
+	                    res.json(err);
+	            });
+        	});
+
+    	}else{
+
+   		   pool.connect(function(err, client)
+	        {
+	            if(err) {
+	                return console.error('error fetching client from pool', err);
+	            }
+	            
+	            var resl=qw.select(req,'Select sp.id, sp.name, sum(so.total_value * sp.salescommission )as commission from salesperson sp join salesorder so on (so.salesid = sp.id) ');
+	            resl+=" group by 1,2";
+	            client.query(resl, function(err, result)
+	            {
+	                if(!err)
+	                    res.json(result.rows);
+	                else
+	                    res.json(err);
+	            });
+	        });
+
+    	}
+        
+}else
+      res.json({access:"denied"});
+});
 
 module.exports = router;
 

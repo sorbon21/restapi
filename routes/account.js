@@ -86,41 +86,91 @@ router.delete('/:id?',function(req,res,next)
     
 
 });
+
 router.put('/:id?',function(req,res,next)
 {
 
 
-        pool.connect(function(err, client)
-        {
+    pool.connect(function(err, client)
+    {
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
       if (security.status==1)
       {
                  
-            var resl=qw.upd(req,'UPDATE account SET  ','id');
-            client.query(resl, function(err, result)
-            {
-                if(!err)
-                    if (req.body.statusid)
-                    {
-                    var sub_status;
-                    if (req.body.statusid==2)
-                        sub_status = 3;
-                    else if (req.body.statusid==1)
-                        sub_status = 1;
-                    client.query('UPDATE subscription set statusid = $1 where accountid = $2', [sub_status,req.params.id], function(result1,err)
+			        client.query('SELECT typeid FROM account WHERE account.statusid =$1 and account.id =$2', [req.body.statusid,req.params.id], function(result1,err)
                     {
                         if (!err)
-                            res.json(["status: ","OK!"]);
+                            {
+                            	if (result1.rows[0].typeid==1)
+                            	{
+
+
+                    					  var resl=qw.upd(req,'UPDATE account SET  ','id');
+                    					client.query(resl, function(result1,err)
+					                    {
+					                        if (!err)
+					                            {
+
+						                            	var sub_status;
+									                    if (req.body.statusid==2)
+									                        sub_status = 3;
+									                    else if (req.body.statusid==1)
+									                        sub_status = 1;
+									                    client.query('UPDATE subscription set statusid = $1 where accountid = $2', [sub_status,req.params.id], function(result2,err)
+									                    {
+									                        if (!err)
+									                            res.json(["status: ","OK!"]);
+									                        else 
+									                            res.json(err);
+									                    });		
+
+					                            }
+					                        else 
+					                            res.json(err);
+					                    });
+                            		
+
+                            	}else
+                            		if (result1.rows[0].typeid==2)
+                            		{
+
+                            			        var resl=qw.upd(req,'UPDATE account SET  ','vendoraccountid');
+									            client.query(resl, function(err, result)
+									            {
+									                if(!err)
+									                    {
+								                            			var sub_status;
+												                    if (req.body.statusid==2)
+												                        sub_status = 3;
+												                    else if (req.body.statusid==1)
+												                        sub_status = 1;
+												                    client.query('UPDATE subscription set statusid = $1 where accountid in ((select id from account where account.vendoraccountid = $2))', [sub_status,req.params.id], function(result2,err)
+												                    {
+												                        if (!err)
+												                            res.json(["status: ","OK!"]);
+												                        else 
+												                            res.json(err);
+												                    });		
+
+									                    }
+									                else
+									                    res.json(err);
+									            });
+
+
+                                    }
+
+
+                            }
                         else 
                             res.json(err);
                     });
-                    } else
-                    res.json(["status: ","OK!"]);
-                else
-                    res.json(err);
-            });
+                    
+                    
+                
+                    
         }
         else
             res.json({access:"denied"});
@@ -129,6 +179,10 @@ router.put('/:id?',function(req,res,next)
 
 
 });
+
+
+
+
 
 module.exports = router;
 
