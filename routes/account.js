@@ -99,7 +99,7 @@ router.put('/:id?',function(req,res,next)
       if (security.status==1)
       {
                  
-			        client.query('SELECT typeid FROM account WHERE account.statusid =$1 and account.id =$2', [req.body.statusid,req.params.id], function(result1,err)
+			        client.query('SELECT typeid FROM account WHERE  account.id =$1', [req.params.id], function(result1,err)
                     {
                         if (!err)
                             {
@@ -136,30 +136,45 @@ router.put('/:id?',function(req,res,next)
                             		if (result1.rows[0].typeid==2)
                             		{
 
-                            			        var resl=qw.upd(req,'UPDATE account SET  ','vendoraccountid');
+
+
+									        	var resl=qw.upd(req,'UPDATE account SET  ','id');
 									            client.query(resl, function(err, result)
 									            {
 									                if(!err)
 									                    {
-								                            			var sub_status;
-												                    if (req.body.statusid==2)
-												                        sub_status = 3;
-												                    else if (req.body.statusid==1)
-												                        sub_status = 1;
-												                    client.query('UPDATE subscription set statusid = $1 where accountid in ((select id from account where account.vendoraccountid = $2))', [sub_status,req.params.id], function(result2,err)
+
+												            var reslt1=qw.upd(req,'UPDATE account SET  ','vendoraccountid');
+												            client.query(reslt1, function(err, result)
+												            {
+												                if(!err)
 												                    {
-												                        if (!err)
-												                            res.json(["status: ","OK!"]);
-												                        else 
-												                            res.json(err);
-												                    });		
+											                            		var sub_status;
+															                    if (req.body.statusid==2)
+															                        sub_status = 3;
+															                    else if (req.body.statusid==1)
+															                        sub_status = 1;
+															                    client.query('UPDATE subscription set statusid = $1 where accountid in ((select id from account where account.vendoraccountid = $2))', [sub_status,req.params.id], function(result2,err)
+															                    {
+															                        if (!err)
+															                            res.json({status: "OK!"});
+															                        else 
+															                            res.json(err);
+															                    });		
+
+												                    }
+												                else
+												                    res.json(err);
+												            });
+
+
 
 									                    }
 									                else
 									                    res.json(err);
 									            });
 
-
+                           			       
                                     }
 
 

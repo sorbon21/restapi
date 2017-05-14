@@ -15,7 +15,28 @@ router.get('/:id?',function(req,res,next)
             if(err) {
                 return console.error('error fetching client from pool', err);
             }
-            var resl=qw.select(req,'SELECT *  FROM salesperson ');
+
+
+            if (req.params.id=='report')
+            {
+
+
+
+			       var  resl= qw.sdate(req,'Select sp.id, sp.name, sum(so.total_value * sp.salescommission )as commission from salesperson sp join salesorder so on (so.salesid = sp.id)','docdate') ;
+			       resl+=" group by 1,2";
+            	console.log(resl);
+	            client.query(resl, function(err, result)
+	            {
+	                if(!err)
+	                    res.json(result.rows);
+	                else
+	                    res.json(err);
+	            });
+	        
+
+            }else{
+
+            	var resl=qw.select(req,'SELECT *  FROM salesperson ');
 
             client.query(resl, function(err, result)
             {
@@ -24,6 +45,9 @@ router.get('/:id?',function(req,res,next)
                 else
                     res.json(err);
             });
+
+          }
+            
         });
 }else
       res.json({access:"denied"});
@@ -130,34 +154,6 @@ router.get('/:id/report',function(req,res,next)
 });
 
 
-
-
-router.get('/report',function(req,res,next)
-{
-   if (security.status==1)
-    {
-    	   pool.connect(function(err, client)
-	        {
-	            if(err) {
-	                return console.error('error fetching client from pool', err);
-	            }
-	            
-	            var resl=qw.select(req,'Select sp.id, sp.name, sum(so.total_value * sp.salescommission )as commission from salesperson sp join salesorder so on (so.salesid = sp.id) ');
-	            resl+=" group by 1,2";
-	            client.query(resl, function(err, result)
-	            {
-	                if(!err)
-	                    res.json(result.rows);
-	                else
-	                    res.json(err);
-	            });
-	        });
-
-    	
-        
-	}else
-      res.json({access:"denied"});
-});
 
 module.exports = router;
 
