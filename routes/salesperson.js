@@ -105,10 +105,9 @@ router.put('/:id?',function(req,res,next)
 //--------------------------------------------------------
 router.get('/:id/report',function(req,res,next)
 {
-   if (security.status==1)
+   if (security.status==1&&req.params.id)
     {
-    	if (req.params.id)
-    	{
+    	
 
     		pool.connect(function(err, client)
             {
@@ -124,9 +123,20 @@ router.get('/:id/report',function(req,res,next)
 	            });
         	});
 
-    	}else{
+    	
+        
+}else
+      res.json({access:"denied"});
+});
 
-   		   pool.connect(function(err, client)
+
+
+
+router.get('/report',function(req,res,next)
+{
+   if (security.status==1)
+    {
+    	   pool.connect(function(err, client)
 	        {
 	            if(err) {
 	                return console.error('error fetching client from pool', err);
@@ -143,9 +153,9 @@ router.get('/:id/report',function(req,res,next)
 	            });
 	        });
 
-    	}
+    	
         
-}else
+	}else
       res.json({access:"denied"});
 });
 
